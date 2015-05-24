@@ -1,5 +1,5 @@
 <?php
-
+	ini_set('display_errors',true);
 	class FaultException extends Exception
 	{
 	
@@ -7,26 +7,35 @@
 	
 	define("UPLOAD_DIR","upload/");
 
+	function parseXml(){
+		if($xml !== null){
+//libxml_disable_entity_loader(true);
+ 		$dom = new DOMDocument();
+		
+ 		if ($dom->load($xml) !== FALSE){
 
-	function getContentXml($file){
-		//libxml_disable_entity_loader(true);
-		print_r($file);
-// 		$dom = new DOMDocument();
-		
-// 		if ($dom->load($xml) !== FALSE)
-// 			echo "loaded remote xml!\n";
-// 		else
-// 			echo "failed to load remote xml!\n";
-		
-		$zip = new ZipArchive;
-		if ($zip->open('test.zip') === TRUE) {
-    		$zip->extractTo('/my/destination/dir/');
-    		$zip->close();
-    		echo 'ok';
-		} else {
-    		echo 'failed';
+		}else{
+			throw new FaultException('Error parsing xml');
 		}
 	}
+
+	function getContentXml($filename){
+		echo $filename;		$path = 'upload/'.$filename;
+		mkdir($path . 'dir');		
+		$xml = null;
+		$zip = new ZipArchive;
+		if ($zip->open($path) === TRUE) {
+    		$zip->extractTo($path . 'dir');
+    		$zip->close();
+		$handle = fopen($path,'r');		
+		$xml =  fread($handle, filesize($path . 'content.xml');
+		fclose($handle);
+		} else {
+			throw new FaultException('Error extracting file');
+		}
+		return $xml;
+	}
+
 	function saveFile(){
 		
 		if (!empty($_FILES["file1"])) {
@@ -35,10 +44,6 @@
     	if ($myFile["error"] !== UPLOAD_ERR_OK) {
        	 	throw new FaultException("Error uploading.");
     	}	
- 
- 		if($myFile["type"]!=="ods"){
- 			throw new FaultException("Wrong filetype.");
- 		}
     	// ensure a safe filename
     	$name = preg_replace("/[^A-Z0-9._-]/i", "_", $myFile["name"]);
  
@@ -65,8 +70,7 @@
 	function showTable(){
 	
 	}
-
-	if(isset($_POST['submit'])){
+	if(isset($_POST['Submit'])){
 		showTable(parseXml(getContentXml(saveFile())));
 	}
 
