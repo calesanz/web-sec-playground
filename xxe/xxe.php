@@ -7,34 +7,39 @@
 	
 	define("UPLOAD_DIR","upload/");
 
-	function parseXml(){
+	function parseXml($xml){
 		if($xml !== null){
-//libxml_disable_entity_loader(true);
- 		$dom = new DOMDocument();
+			//libxml_disable_entity_loader(true);
+ 			$dom = new DOMDocument();
 		
- 		if ($dom->load($xml) !== FALSE){
-
-		}else{
-			throw new FaultException('Error parsing xml');
+ 			if ($dom->load($xml) !== FALSE){
+				print $dom->saveXML();
+			}else{
+				throw new FaultException('Error parsing xml');
+			}
 		}
+		else
+			throw new FaultException('Error reading content.xml');
 	}
 
 	function getContentXml($filename){
-		echo $filename;		$path = 'upload/'.$filename;
-		mkdir($path . 'dir');		
+		$filepath = UPLOAD_DIR .$filename;
+		$filedirectory = $filepath . 'dir';
+		mkdir($filedirectory);		
+		$contentfile = $filedirectory .'/content.xml';
 		$xml = null;
 		$zip = new ZipArchive;
-		if ($zip->open($path) === TRUE) {
-    		$zip->extractTo($path . 'dir');
-    		$zip->close();
-		$handle = fopen($path,'r');		
-		$xml =  fread($handle, filesize($path . 'content.xml');
-		fclose($handle);
+		if ($zip->open($filepath) === TRUE) {
+    			$zip->extractTo($filedirectory);
+    			$zip->close();
+			$handle = fopen($contentfile,'r');		
+			$xml =  fread($handle, filesize($contentfile));
+			fclose($handle);
 		} else {
 			throw new FaultException('Error extracting file');
 		}
-		return $xml;
-	}
+		return $contentfile;
+	 }
 
 	function saveFile(){
 		
@@ -64,13 +69,13 @@
 		}
 	} 
 	function showUpload(){
-		require("upload.hmtl");	
+		require("upload.html");	
 	}
 
 	function showTable(){
-	
 	}
-	if(isset($_POST['Submit'])){
+	if(isset($_POST['submit'])){
 		showTable(parseXml(getContentXml(saveFile())));
 	}
+	else showUpload();
 
