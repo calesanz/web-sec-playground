@@ -91,25 +91,33 @@ public class Xxe extends HttpServlet {
 							if (entry.getName().equals("content.xml")) {
 								DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 										.newInstance();
+								dbFactory.setNamespaceAware(true);
 								DocumentBuilder dBuilder = dbFactory
 										.newDocumentBuilder();
+
 								Document doc = dBuilder.parse(zipIn);
 
 								XPathFactory xPathFactory = XPathFactory
 										.newInstance();
 								XPath xpath = xPathFactory.newXPath();
-								HashMap<String, String> prefMap = new HashMap<String, String>() {{
-								    put("office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
-								    put("style","urn:oasis:names:tc:opendocument:xmlns:style:1.0");
-								    put("text","urn:oasis:names:tc:opendocument:xmlns:table:1.0");
-								    put("draw","urn:oasis:names:tc:opendocument:xmlns:drawing:1.0");
-								    put("table","urn:oasis:names:tc:opendocument:xmlns:table:1.0");
-								}};
-								SimpleNamespaceContext namespaces = new SimpleNamespaceContext(prefMap);
+								HashMap<String, String> prefMap = new HashMap<String, String>() {
+									{
+										put("office",
+												"urn:oasis:names:tc:opendocument:xmlns:office:1.0");
+										put("table",
+												"urn:oasis:names:tc:opendocument:xmlns:table:1.0");
+
+										put("text",
+												"urn:oasis:names:tc:opendocument:xmlns:text:1.0");
+
+									}
+								};
+								SimpleNamespaceContext namespaces = new SimpleNamespaceContext(
+										prefMap);
 								xpath.setNamespaceContext(namespaces);
 
 								XPathExpression expr = xpath
-										.compile("//office:body/office:spreadsheet/table:table");
+										.compile("/office:document-content/office:body/office:spreadsheet/table:table");
 								Node node = (Node) expr.evaluate(doc,
 										XPathConstants.NODE);
 
