@@ -141,7 +141,7 @@ public class Xxe extends HttpServlet {
 									htmlReturn.append("</tr>");
 								}
 								
-								request.setAttribute("message",
+								request.setAttribute("table",
 										String.format("<table>%s</table>", htmlReturn.toString()));
 								break;
 							}
@@ -157,7 +157,7 @@ public class Xxe extends HttpServlet {
 					"An Error ocurred: " + ex.getMessage());
 		}
 		// redirects client to message page
-		getServletContext().getRequestDispatcher("/response.jsp").forward(
+		getServletContext().getRequestDispatcher("/upload.jsp").forward(
 				request, response);
 	}
 
