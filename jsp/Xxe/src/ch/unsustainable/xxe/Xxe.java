@@ -120,9 +120,27 @@ public class Xxe extends HttpServlet {
 										.compile("/office:document-content/office:body/office:spreadsheet/table:table");
 								Node node = (Node) expr.evaluate(doc,
 										XPathConstants.NODE);
+								StringBuilder htmlReturn = new StringBuilder();
 
+								for (int i = 0; i < node.getChildNodes()
+										.getLength(); i++) {
+									htmlReturn.append("<tr>");
+									NodeList row = node.getChildNodes().item(i)
+											.getChildNodes();
+									for (int c = 0; c < row.getLength(); c++) {
+										htmlReturn.append("<td>");
+										Node cell = row.item(c);
+										Node textNode = cell.getFirstChild();
+										if (textNode != null)
+											htmlReturn.append(textNode
+													.getTextContent());
+										htmlReturn.append("</td>");
+									}
+									htmlReturn.append("</tr>");
+								}
+								
 								request.setAttribute("message",
-										nodeToXmlString(node));
+										String.format("<table>%s</table>", htmlReturn.toString()));
 								break;
 							}
 
