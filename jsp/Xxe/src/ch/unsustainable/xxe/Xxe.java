@@ -91,10 +91,12 @@ public class Xxe extends HttpServlet {
 							if (entry.getName().equals("content.xml")) {
 								DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 										.newInstance();
+							
+								//dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 								dbFactory.setNamespaceAware(true);
 								DocumentBuilder dBuilder = dbFactory
 										.newDocumentBuilder();
-
+							
 								Document doc = dBuilder.parse(zipIn);
 
 								XPathFactory xPathFactory = XPathFactory
@@ -159,15 +161,6 @@ public class Xxe extends HttpServlet {
 				request, response);
 	}
 
-	private String nodeToXmlString(Node doc) throws TransformerException {
-		DOMSource domSource = new DOMSource(doc);
-		StringWriter writer = new StringWriter();
-		StreamResult result = new StreamResult(writer);
-		TransformerFactory tf = TransformerFactory.newInstance();
-		Transformer transformer = tf.newTransformer();
-		transformer.transform(domSource, result);
-		return writer.toString();
-	}
 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
