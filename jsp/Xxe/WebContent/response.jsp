@@ -4,7 +4,7 @@
     "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Upload File Response</title>
+<title>Upload File </title>
 </head>
 <body>
     <h2>${requestScope.message}</h2> 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.StringWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.zip.*;
 
@@ -17,12 +18,20 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
@@ -86,8 +95,26 @@ public class Xxe extends HttpServlet {
 										.newDocumentBuilder();
 								Document doc = dBuilder.parse(zipIn);
 
+								XPathFactory xPathFactory = XPathFactory
+										.newInstance();
+								XPath xpath = xPathFactory.newXPath();
+								HashMap<String, String> prefMap = new HashMap<String, String>() {{
+								    put("office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
+								    put("style","urn:oasis:names:tc:opendocument:xmlns:style:1.0");
+								    put("text","urn:oasis:names:tc:opendocument:xmlns:table:1.0");
+								    put("draw","urn:oasis:names:tc:opendocument:xmlns:drawing:1.0");
+								    put("table","urn:oasis:names:tc:opendocument:xmlns:table:1.0");
+								}};
+								SimpleNamespaceContext namespaces = new SimpleNamespaceContext(prefMap);
+								xpath.setNamespaceContext(namespaces);
+
+								XPathExpression expr = xpath
+										.compile("//office:body/office:spreadsheet/table:table");
+								Node node = (Node) expr.evaluate(doc,
+										XPathConstants.NODE);
+
 								request.setAttribute("message",
-										domToXmlString(doc));
+										nodeToXmlString(node));
 								break;
 							}
 
@@ -106,7 +133,7 @@ public class Xxe extends HttpServlet {
 				request, response);
 	}
 
-	private String domToXmlString(Document doc) throws TransformerException {
+	private String nodeToXmlString(Node doc) throws TransformerException {
 		DOMSource domSource = new DOMSource(doc);
 		StringWriter writer = new StringWriter();
 		StreamResult result = new StreamResult(writer);
