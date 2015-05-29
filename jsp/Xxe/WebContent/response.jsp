@@ -7,7 +7,7 @@
 <title>Upload File </title>
 </head>
 <body>
-    <h2>${requestScope.message}</h2> 
+    ${requestScope.message}
 </body>
 </html>
  
