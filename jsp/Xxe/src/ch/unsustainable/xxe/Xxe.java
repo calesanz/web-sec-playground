@@ -1,7 +1,7 @@
 package ch.unsustainable.xxe;
 
 import java.io.File;
-import java.io.StringWriter;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -18,10 +18,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-import javax.xml.XMLConstants;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -31,7 +27,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
@@ -103,6 +98,11 @@ public class Xxe extends HttpServlet {
 										.newInstance();
 								XPath xpath = xPathFactory.newXPath();
 								HashMap<String, String> prefMap = new HashMap<String, String>() {
+									/**
+									 * 
+									 */
+									private static final long serialVersionUID = 1L;
+
 									{
 										put("office",
 												"urn:oasis:names:tc:opendocument:xmlns:office:1.0");
@@ -142,7 +142,7 @@ public class Xxe extends HttpServlet {
 								}
 								
 								request.setAttribute("table",
-										String.format("<table>%s</table>", htmlReturn.toString()));
+										String.format("<table class='table table-bordered'>%s</table>", htmlReturn.toString()));
 								break;
 							}
 

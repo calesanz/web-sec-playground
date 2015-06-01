@@ -5,37 +5,35 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Spreadsheet Viewer</title>
+<link rel="stylesheet" href="bootstrap.min.css">
 <style type="text/css">
-body{
-	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-	color: #ccc;
-}
-h1{
-color:black;
-}
-table{
-border-spacing: 0.5rem;
-
- border-collapse: collapse;
- color:black;
- }
-td{
-	border:1px solid black;	
-	text-align: left;
-}
+	table {
+		border-spacing: 0.5rem;
+		border-collapse: collapse;
+		color: black;
+		
+	}
+	
+	td {
+		border: 1px solid grey;
+		text-align: left;
+	}
 </style>
 </head>
 
 <body>
-	<h1>LibreOffice Spreadsheet Viewer</h1>
-	<p>Upload a LibreOffice Spreadsheet and view it in browser!</p>
-	<div class="">${requestScope.message}</div>
-	<div class="office-table">${requestScope.table}</div>
-	<div>
-		<form action="Xxe" method="post" enctype="multipart/form-data">
-			Select File to Upload:<input type="file" name="file1"> <br>
-			<input type="submit" value="Upload">
-		</form>
+	<div class="container">
+		<h1>LibreOffice Spreadsheet Viewer</h1>
+		<p>Upload a LibreOffice Spreadsheet and view it in browser!</p>
+		<div class="row">${requestScope.message}</div>
+		<div class=" row ">${requestScope.table}</div>
+		<div class="row">
+			<form action="Xxe" method="post" enctype="multipart/form-data">
+				Select File to Upload:<input type="file" name="file1"> <br>
+				<input type="submit" value="Upload">
+			</form>
+		</div>
+		<script src="js/bootstrap.min.js"></script>
 	</div>
 </body>
 
